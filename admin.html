@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodieHub - Admin Panel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-admin">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-utensils"></i> FoodieHub
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Menu</a>
+                <a href="cart.html" class="cart-link">
+                    <i class="fas fa-shopping-cart"></i> Cart
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+                <a href="admin.html" class="active admin-link">
+                    <i class="fas fa-lock"></i> Admin
+                </a>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="admin-login" id="adminLogin">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="fas fa-shield-alt"></i>
+                <h2>Admin Login</h2>
+                <p>Enter your credentials to access the admin panel</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="adminId">Admin ID</label>
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="adminId" placeholder="Enter admin ID" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="adminPassword" placeholder="Enter password" required>
+                    </div>
+                </div>
+                <div class="login-error" id="loginError" style="display: none;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Invalid ID or Password</span>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+            <div class="login-hint">
+                <p><i class="fas fa-info-circle"></i> Default: ID: <strong>admin</strong> | Password: <strong>admin123</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Dashboard -->
+    <section class="admin-dashboard" id="adminDashboard" style="display: none;">
+        <div class="container">
+            <!-- Admin Header -->
+            <div class="admin-header">
+                <h2><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
+                <button class="btn btn-danger" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon bg-orange">
+                        <i class="fas fa-hamburger"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="burgerCount">0</h3>
+                        <p>Burgers</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-red">
+                        <i class="fas fa-pizza-slice"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pizzaCount">0</h3>
+                        <p>Pizzas</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-green">
+                        <i class="fas fa-bread-slice"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="sandwichCount">0</h3>
+                        <p>Sandwiches</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-blue">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalItems">0</h3>
+                        <p>Total Items</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add New Item -->
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3><i class="fas fa-plus-circle"></i> Add New Item</h3>
+                </div>
+                <form id="addItemForm" class="admin-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="itemName">Item Name *</label>
+                            <input type="text" id="itemName" required placeholder="e.g., Classic Burger">
+                        </div>
+                        <div class="form-group">
+                            <label for="itemCategory">Category *</label>
+                            <select id="itemCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="burger">Burger</option>
+                                <option value="pizza">Pizza</option>
+                                <option value="sandwich">Sandwich</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemDescription">Description *</label>
+                        <textarea id="itemDescription" rows="2" required placeholder="Brief description of the item"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemImage">Image URL *</label>
+                        <input type="url" id="itemImage" required placeholder="https://example.com/image.jpg">
+                    </div>
+                    <div class="form-row three-col">
+                        <div class="form-group">
+                            <label for="priceSmall">Small Price (Rs.) *</label>
+                            <input type="number" id="priceSmall" required min="1" placeholder="e.g., 350">
+                        </div>
+                        <div class="form-group">
+                            <label for="priceMedium">Medium Price (Rs.) *</label>
+                            <input type="number" id="priceMedium" required min="1" placeholder="e.g., 550">
+                        </div>
+                        <div class="form-group">
+                            <label for="priceLarge">Large Price (Rs.) *</label>
+                            <input type="number" id="priceLarge" required min="1" placeholder="e.g., 750">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Item
+                    </button>
+                </form>
+            </div>
+
+            <!-- Manage Items -->
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3><i class="fas fa-list"></i> Manage Items</h3>
+                    <div class="admin-filter">
+                        <select id="adminCategoryFilter">
+                            <option value="all">All Categories</option>
+                            <option value="burger">Burgers</option>
+                            <option value="pizza">Pizzas</option>
+                            <option value="sandwich">Sandwiches</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Small</th>
+                                <th>Medium</th>
+                                <th>Large</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody">
+                            <!-- Items will be loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Edit Item Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Item</h3>
+                <button class="modal-close" id="closeEditModal">&times;</button>
+            </div>
+            <form id="editItemForm">
+                <input type="hidden" id="editItemId">
+                <div class="form-group">
+                    <label for="editName">Item Name *</label>
+                    <input type="text" id="editName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editCategory">Category *</label>
+                    <select id="editCategory" required>
+                        <option value="burger">Burger</option>
+                        <option value="pizza">Pizza</option>
+                        <option value="sandwich">Sandwich</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editDescription">Description *</label>
+                    <textarea id="editDescription" rows="2" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editImage">Image URL *</label>
+                    <input type="url" id="editImage" required>
+                </div>
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="editPriceSmall">Small (Rs.) *</label>
+                        <input type="number" id="editPriceSmall" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="editPriceMedium">Medium (Rs.) *</label>
+                        <input type="number" id="editPriceMedium" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="editPriceLarge">Large (Rs.) *</label>
+                        <input type="number" id="editPriceLarge" required min="1">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelEdit">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Confirm Delete</h3>
+                <button class="modal-close" id="closeDeleteModal">&times;</button>
+            </div>
+            <p class="modal-text">Are you sure you want to delete <strong id="deleteItemName"></strong>? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelDelete">Cancel</button>
+                <button class="btn btn-danger" id="confirmDelete">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Action completed!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-utensils"></i> FoodieHub</h3>
+                    <p>Delivering happiness, one meal at a time.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Menu</a>
+                    <a href="cart.html">Cart</a>
+                    <a href="checkout.html">Checkout</a>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <p><i class="fas fa-phone"></i> +92 300 1234567</p>
+                    <p><i class="fas fa-envelope"></i> info@foodiehub.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Karachi, Pakistan</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 FoodieHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
