@@ -1,107 +1,289 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FoodieHub - Delicious Food Delivered</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="logo">
-                <i class="fas fa-utensils"></i> FoodieHub
-            </a>
-            <div class="nav-links">
-                <a href="index.html" class="active">Menu</a>
-                <a href="cart.html" class="cart-link">
-                    <i class="fas fa-shopping-cart"></i> Cart
-                    <span class="cart-count" id="cartCount">0</span>
-                </a>
-                <a href="admin.html" class="admin-link">
-                    <i class="fas fa-lock"></i> Admin
-                </a>
+    <nav class="navbar navbar-full">
+      <div class="nav-container">
+        <!-- Left Side: Location & Contact Number -->
+        <div class="nav-left">
+          <button class="location-selector" id="locationSelector">
+            <div class="location-content">
+              <i class="fas fa-map-marker-alt location-icon"></i>
+              <div class="current-location" id="currentLocation">
+                <span class="detecting-text"
+                  ><i class="fas fa-spinner fa-spin"></i> Detecting...</span>
+              </div>
             </div>
-            <button class="mobile-menu-btn" id="mobileMenuBtn">
-                <i class="fas fa-bars"></i>
+            <i class="fas fa-chevron-down arrow-icon"></i>
+          </button>
+          
+          <!-- Location Selection Modal -->
+          <div class="location-modal-overlay" id="locationModal">
+            <div class="location-modal">
+              <button class="location-modal-close" id="locationModalClose">
+                <i class="fas fa-times"></i>
+              </button>
+              <div class="location-modal-header">
+                <i class="fas fa-utensils"></i>
+                <span>FoodieHub</span>
+              </div>
+              <div class="location-modal-subtitle">Select your delivery type</div>
+              <div class="order-type-toggle">
+                <button class="order-type-btn active" data-type="delivery">
+                  <i class="fas fa-motorcycle"></i> Delivery
+                </button>
+                <button class="order-type-btn" data-type="pickup">
+                  <i class="fas fa-store"></i> Pickup
+                </button>
+              </div>
+              <h3 class="location-modal-title">Select Your Location</h3>
+              <button class="use-current-location-btn" id="useCurrentLocation">
+                <i class="fas fa-globe"></i> Use Current Location
+              </button>
+              <div class="location-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="locationSearch" placeholder="Search location...">
+              </div>
+              <div class="location-list" id="locationList">
+                <!-- Locations will be populated here -->
+              </div>
+              <button class="select-location-btn" id="selectLocationBtn" disabled>
+                <span id="selectBtnText">Select</span>
+              </button>
+            </div>
+          </div>
+
+          <button class="contact-number">
+           <i class="fas fa-phone"></i>
+            <span>+92-300-1234567</span>
+          </button>
+
+          </div>
+
+        <!-- Center: Brand Logo -->
+        <a href="index.html" class="logo">
+          <i class="fas fa-utensils"></i> FoodieHub
+        </a>
+
+        <!-- Right Side: Toggle Menu -->
+        <div class="nav-right">
+          <div class="toggle-menu">
+            <button class="toggle-btn" id="toggleMenuBtn">
+              <i class="fas fa-bars"></i>
             </button>
+            <div class="toggle-dropdown" id="toggleDropdown">
+              <a href="contact.html" class="toggle-item">
+                <i class="fas fa-envelope"></i> Contact Us
+              </a>
+              <a href="admin.html" class="toggle-item">
+                <i class="fas fa-lock"></i> Admin
+              </a>
+            </div>
+          </div>
         </div>
+      </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero Section with Carousel -->
     <section class="hero">
-        <div class="hero-content">
-            <h1>Delicious Food, <span class="highlight">Delivered Fresh</span></h1>
-            <p>Choose from our amazing selection of burgers, pizzas, and sandwiches</p>
-            <a href="#menu" class="btn btn-primary">Explore Menu</a>
+      <!-- Carousel Slides -->
+      <div class="hero-carousel" id="heroCarousel">
+        <!-- Slide 1 -->
+        <div
+          class="carousel-slide active"
+          data-slide="1"
+          style="background-image: url(&quot;images/burger.jpg&quot;)"
+        >
+          <div class="slide-overlay"></div>
+          <div class="hero-content">
+            <h1 class="hero-title">
+              <span class="title-line">Delicious Food,</span>
+              <span class="title-line highlight">Delivered Fresh</span>
+            </h1>
+            <p class="hero-description">
+              <i class="fas fa-fire"></i>
+              Watch our chefs prepare mouth-watering dishes
+              <i class="fas fa-fire"></i>
+            </p>
+            <div class="hero-buttons">
+              <a href="#menu" class="btn btn-primary btn-large">
+                <i class="fas fa-utensils"></i>
+                Explore Menu
+              </a>
+              <a href="tel:+92-300-1234567" class="btn btn-secondary btn-large">
+                <i class="fas fa-phone"></i>
+                Order Now
+              </a>
+            </div>
+            <div class="cooking-stats">
+              <div class="stat-item">
+                <i class="fas fa-clock"></i>
+                <span>30 min Delivery</span>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- Slide 2 -->
+        <div
+          class="carousel-slide"
+          data-slide="2"
+          style="background-image: url(&quot;images/pizza.jpg&quot;)"
+        >
+          <div class="slide-overlay"></div>
+          <div class="hero-content">
+            <h1 class="hero-title">
+              <span class="title-line">Amazing Selection</span>
+            </h1>
+            <p class="hero-subtext">
+              Choose from our amazing selection of burgers, pizzas, and
+              sandwiches
+            </p>
+            <div class="hero-buttons">
+              <a href="#menu" class="btn btn-primary btn-large">
+                <i class="fas fa-utensils"></i>
+                Explore Menu
+              </a>
+              <a href="tel:+92-300-1234567" class="btn btn-secondary btn-large">
+                <i class="fas fa-phone"></i>
+                Order Now
+              </a>
+            </div>
+            <div class="cooking-stats">
+              <div class="stat-item">
+                <i class="fas fa-star"></i>
+                <span>4.8 Rating</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div
+          class="carousel-slide"
+          data-slide="3"
+          style="background-image: url(&quot;images/sandwich.jpg&quot;)"
+        >
+          <div class="slide-overlay"></div>
+          <div class="hero-content">
+            <h1 class="hero-title">
+              <span class="title-line highlight">10k+ Happy</span>
+              <span class="title-line">Customers</span>
+            </h1>
+            <p class="hero-description">
+              Join thousands of satisfied food lovers
+            </p>
+            <div class="hero-buttons">
+              <a href="#menu" class="btn btn-primary btn-large">
+                <i class="fas fa-utensils"></i>
+                Explore Menu
+              </a>
+              <a href="tel:+92-300-1234567" class="btn btn-secondary btn-large">
+                <i class="fas fa-phone"></i>
+                Order Now
+              </a>
+            </div>
+            <div class="cooking-stats">
+              <div class="stat-item">
+                <i class="fas fa-heart"></i>
+                <span>10k+ Happy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carousel Controls -->
+      <div class="carousel-controls">
+        <button class="carousel-btn prev" id="carouselPrev">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="carousel-dots" id="carouselDots">
+          <span class="dot active" data-slide="1"></span>
+          <span class="dot" data-slide="2"></span>
+          <span class="dot" data-slide="3"></span>
+        </div>
+        <button class="carousel-btn next" id="carouselNext">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
     </section>
 
     <!-- Category Filter -->
     <section class="category-filter" id="menu">
-        <div class="container">
-            <h2 class="section-title">Our Menu</h2>
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-category="all">All Items</button>
-                <button class="filter-btn" data-category="burger">
-                    <i class="fas fa-hamburger"></i> Burgers
-                </button>
-                <button class="filter-btn" data-category="pizza">
-                    <i class="fas fa-pizza-slice"></i> Pizzas
-                </button>
-                <button class="filter-btn" data-category="sandwich">
-                    <i class="fas fa-bread-slice"></i> Sandwiches
-                </button>
-            </div>
+      <div class="container">
+        <h2 class="section-title">Our Menu</h2>
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-category="all">
+            All Items
+          </button>
+          <button class="filter-btn" data-category="burger">
+            <i class="fas fa-hamburger"></i> Burgers
+          </button>
+          <button class="filter-btn" data-category="pizza">
+            <i class="fas fa-pizza-slice"></i> Pizzas
+          </button>
+          <button class="filter-btn" data-category="sandwich">
+            <i class="fas fa-bread-slice"></i> Sandwiches
+          </button>
         </div>
+      </div>
     </section>
 
     <!-- Menu Items -->
     <section class="menu-section">
-        <div class="container">
-            <div class="menu-grid" id="menuGrid">
-                <!-- Items will be dynamically loaded -->
-            </div>
+      <div class="container">
+        <div class="menu-grid" id="menuGrid">
+          <!-- Items will be dynamically loaded -->
         </div>
+      </div>
     </section>
 
     <!-- Toast Notification -->
     <div class="toast" id="toast">
-        <i class="fas fa-check-circle"></i>
-        <span id="toastMessage">Item added to cart!</span>
+      <i class="fas fa-check-circle"></i>
+      <span id="toastMessage">Item added to cart!</span>
     </div>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3><i class="fas fa-utensils"></i> FoodieHub</h3>
-                    <p>Delivering happiness, one meal at a time.</p>
-                </div>
-                <div class="footer-links">
-                    <h4>Quick Links</h4>
-                    <a href="index.html">Menu</a>
-                    <a href="cart.html">Cart</a>
-                    <a href="checkout.html">Checkout</a>
-                </div>
-                <div class="footer-contact">
-                    <h4>Contact Us</h4>
-                    <p><i class="fas fa-phone"></i> +92 300 1234567</p>
-                    <p><i class="fas fa-envelope"></i> info@foodiehub.com</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Karachi, Pakistan</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 FoodieHub. All rights reserved.</p>
-            </div>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <h3><i class="fas fa-utensils"></i> FoodieHub</h3>
+            <p>Delivering happiness, one meal at a time.</p>
+          </div>
+          <div class="footer-links">
+            <h4>Quick Links</h4>
+            <a href="index.html">Menu</a>
+            <a href="cart.html">Cart</a>
+            <a href="checkout.html">Checkout</a>
+          </div>
+          <div class="footer-contact">
+            <h4>Contact Us</h4>
+            <p><i class="fas fa-phone"></i> +92 300 1234567</p>
+            <p><i class="fas fa-envelope"></i> info@foodiehub.com</p>
+            <p><i class="fas fa-map-marker-alt"></i> Karachi, Pakistan</p>
+          </div>
         </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 FoodieHub. All rights reserved.</p>
+        </div>
+      </div>
     </footer>
 
     <script src="js/data.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/app.js"></script>
-</body>
+  </body>
 </html>
