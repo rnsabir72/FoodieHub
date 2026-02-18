@@ -742,6 +742,7 @@ img {
 /* ===== Toggle Menu ===== */
 .toggle-menu {
     position: relative;
+    display: block;
 }
 
 .toggle-btn {
@@ -2958,16 +2959,150 @@ img {
 @media (max-width: 768px) {
     .nav-links {
         display: none;
-        position: absolute;
-        top: 60px;
+        position: fixed;
+        top: 55px;
         left: 0;
         right: 0;
         background: #ffffff;
         flex-direction: column;
-        padding: 20px;
+        padding: 15px;
         box-shadow: var(--shadow);
-        gap: 15px;
+        gap: 10px;
         border-bottom: 2px solid var(--primary);
+        max-height: calc(100vh - 55px);
+        overflow-y: auto;
+    }
+
+    .nav-links.active,
+    .nav-links.show {
+        display: flex;
+    }
+
+    .nav-links a {
+        color: #5a4a3a;
+        padding: 12px 15px;
+        background: #fff8f0;
+        border-radius: var(--radius-sm);
+        text-align: center;
+        width: 100%;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+        background: var(--primary);
+        color: #ffffff;
+    }
+
+    .nav-links a.active::after {
+        display: none;
+    }
+
+    .nav-links .cart-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Reset nav elements that might have absolute positioning */
+    .nav-left,
+    .nav-right,
+    .logo {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+    }
+
+    /* Make navbar container properly handle mobile layout */
+    .nav-container {
+        flex-wrap: wrap;
+        height: auto;
+        min-height: 55px;
+        padding: 8px 15px;
+    }
+
+    .nav-left {
+        order: 1;
+        flex: 1 1 100%;
+        justify-content: center;
+        margin-bottom: 8px;
+        gap: 8px;
+    }
+
+    .logo {
+        order: 2;
+        font-size: 1.2rem;
+    }
+
+    .nav-right {
+        order: 3;
+        flex: 0 0 auto;
+    }
+
+    /* Mobile menu button */
+    .toggle-menu {
+        display: block;
+    }
+
+    .toggle-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: var(--gray-light);
+        border: none;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        color: #5a4a3a;
+    }
+
+    .toggle-dropdown {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background: #ffffff;
+        border-radius: var(--radius-sm);
+        box-shadow: var(--shadow-lg);
+        min-width: 150px;
+        z-index: 100;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: var(--transition);
+    }
+
+    .toggle-dropdown.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .toggle-item {
+        display: block;
+        padding: 12px 15px;
+        color: #5a4a3a;
+        transition: var(--transition);
+    }
+
+    .toggle-item:hover {
+        background: var(--gray-light);
+        color: var(--primary);
+    }
+
+    /* Nav center for admin */
+    .nav-center {
+        display: none;
+    }
     }
 
     .nav-links.active {
@@ -3300,94 +3435,6 @@ img {
         width: 40px;
         height: 40px;
         font-size: 1rem;
-    }
-
-    /* Navbar Mobile */
-    .nav-center {
-        position: absolute;
-        top: 70px;
-        left: 0;
-        right: 0;
-        background: #ffffff;
-        flex-direction: column;
-        gap: 20px;
-        padding: 20px;
-        box-shadow: var(--shadow-lg);
-        transform: translateY(-150%);
-        opacity: 0;
-        transition: all 0.3s ease;
-        z-index: 999;
-    }
-
-    .nav-container.mobile-active .nav-center {
-        transform: translateY(0);
-        opacity: 1;
-    }
-
-    .nav-right {
-        position: absolute;
-        top: auto;
-        bottom: -80px;
-        left: 0;
-        right: 0;
-        background: #ffffff;
-        padding: 15px 20px;
-        transform: translateY(-150%);
-        opacity: 0;
-        transition: all 0.3s ease;
-        z-index: 998;
-        border-top: 1px solid #e9ecef;
-        justify-content: center;
-        gap: 30px;
-    }
-
-    .nav-container.mobile-active .nav-right {
-        transform: translateY(0);
-        opacity: 1;
-    }
-
-    .location-selector {
-        position: absolute;
-        top: auto;
-        bottom: -150px;
-        left: 50%;
-        transform: translateX(-50%) translateY(-150%);
-        background: #ffffff;
-        padding: 12px 20px;
-        z-index: 997;
-        border-radius: 25px;
-        box-shadow: var(--shadow);
-        transition: all 0.3s ease;
-    }
-
-    .nav-container.mobile-active .location-selector {
-        transform: translateX(-50%) translateY(0);
-        opacity: 1;
-    }
-
-    .admin-section {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-    }
-
-    .mobile-menu-btn {
-        display: block;
-    }
-
-    .dropdown-menu {
-        position: static;
-        transform: none;
-        min-width: 100%;
-        box-shadow: none;
-        border-radius: 8px;
-        margin-top: 10px;
-        max-height: none;
-    }
-
-    .dropdown-menu.show {
-        margin-top: 10px;
     }
 }
 
