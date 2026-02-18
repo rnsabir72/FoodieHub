@@ -658,12 +658,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (toggleBtn && toggleDropdown) {
         toggleBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            toggleDropdown.classList.toggle('show');
+            toggleDropdown.classList.toggle('active');
         });
         
         document.addEventListener('click', (e) => {
             if (!toggleBtn.contains(e.target) && !toggleDropdown.contains(e.target)) {
-                toggleDropdown.classList.remove('show');
+                toggleDropdown.classList.remove('active');
             }
         });
     }
