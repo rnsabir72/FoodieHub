@@ -112,6 +112,39 @@
                             </div>
                         </div>
 
+                        <!-- Card Payment Details -->
+                        <div class="form-section payment-details" id="cardPaymentDetails" style="display: none;">
+                            <h3><i class="fas fa-credit-card"></i> Card Details</h3>
+                            <div class="form-group">
+                                <label for="cardNumber">Card Number</label>
+                                <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="cardExpiry">Expiry Date</label>
+                                    <input type="text" id="cardExpiry" name="cardExpiry" placeholder="MM/YY" maxlength="5">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cardCvv">CVV</label>
+                                    <input type="text" id="cardCvv" name="cardCvv" placeholder="123" maxlength="4">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cardName">Cardholder Name</label>
+                                <input type="text" id="cardName" name="cardName" placeholder="John Doe">
+                            </div>
+                        </div>
+
+                        <!-- JazzCash/EasyPaisa Payment Details -->
+                        <div class="form-section payment-details" id="jazzcashPaymentDetails" style="display: none;">
+                            <h3><i class="fas fa-mobile-alt"></i> EasyPaisa / JazzCash Details</h3>
+                            <div class="form-group">
+                                <label for="jazzcashNumber">Mobile Number</label>
+                                <input type="tel" id="jazzcashNumber" name="jazzcashNumber" placeholder="0300 1234567" maxlength="12">
+                            </div>
+                            <p class="payment-help-text">You will receive an OTP on your mobile number for verification.</p>
+                        </div>
+
                         <!-- Special Instructions -->
                         <div class="form-section">
                             <h3><i class="fas fa-comment-alt"></i> Special Instructions</h3>
@@ -185,7 +218,7 @@
                 </div>
                 <div class="footer-contact">
                     <h4>Contact Us</h4>
-                    <p><i class="fas fa-phone"></i> +92 300 1234567</p>
+                    <p><i class="fas fa-phone"></i> +92 333 3501801</p>
                     <p><i class="fas fa-envelope"></i> info@foodiehub.com</p>
                     <p><i class="fas fa-map-marker-alt"></i> Karachi, Pakistan</p>
                 </div>

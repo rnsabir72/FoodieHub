@@ -105,7 +105,7 @@ const DEFAULT_MENU_ITEMS = [
         id: 9,
         name: "Philly Cheesesteak",
         category: "sandwich",
-        description: "Thinly sliced beef steak with melted provolone cheese, sautéed onions, and peppers on a hoagie roll.",
+        description: "Thinly sliced beef steak with melted provolone cheese, sautéed onions, and peppers on a roll.",
         image: "https://images.unsplash.com/photo-1509722747041-616f39b57569?w=500&h=350&fit=crop",
         prices: {
             small: 500,

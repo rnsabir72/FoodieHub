@@ -10,6 +10,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const successModal = document.getElementById('successModal');
     const orderId = document.getElementById('orderId');
     
+    // ===== Payment Method Toggle =====
+    const paymentOptions = document.querySelectorAll('input[name="payment"]');
+    const cardPaymentDetails = document.getElementById('cardPaymentDetails');
+    const jazzcashPaymentDetails = document.getElementById('jazzcashPaymentDetails');
+    
+    paymentOptions.forEach(option => {
+        option.addEventListener('change', function() {
+            // Hide all payment details
+            if (cardPaymentDetails) cardPaymentDetails.style.display = 'none';
+            if (jazzcashPaymentDetails) jazzcashPaymentDetails.style.display = 'none';
+            
+            // Show selected payment details
+            if (this.value === 'card' && cardPaymentDetails) {
+                cardPaymentDetails.style.display = 'block';
+            } else if (this.value === 'jazzcash' && jazzcashPaymentDetails) {
+                jazzcashPaymentDetails.style.display = 'block';
+            }
+        });
+    });
+    
+    // ===== Card Number Formatting =====
+    const cardNumberInput = document.getElementById('cardNumber');
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '').replace(/\D/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || '';
+            e.target.value = formattedValue;
+        });
+    }
+    
+    // ===== Expiry Date Formatting =====
+    const cardExpiryInput = document.getElementById('cardExpiry');
+    if (cardExpiryInput) {
+        cardExpiryInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+    }
+    
     // ===== Mobile Menu Toggle =====
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const navLinks = document.querySelector('.nav-links');
@@ -86,6 +128,41 @@ document.addEventListener('DOMContentLoaded', () => {
         checkoutForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
+            // Get selected payment method
+            const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+            
+            // Validate payment details based on method
+            if (paymentMethod === 'card') {
+                const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+                const cardExpiry = document.getElementById('cardExpiry').value;
+                const cardCvv = document.getElementById('cardCvv').value;
+                const cardName = document.getElementById('cardName').value;
+                
+                if (!cardNumber || cardNumber.length < 16) {
+                    showToast('Please enter a valid card number');
+                    return;
+                }
+                if (!cardExpiry || cardExpiry.length < 5) {
+                    showToast('Please enter expiry date (MM/YY)');
+                    return;
+                }
+                if (!cardCvv || cardCvv.length < 3) {
+                    showToast('Please enter valid CVV');
+                    return;
+                }
+                if (!cardName) {
+                    showToast('Please enter cardholder name');
+                    return;
+                }
+            } else if (paymentMethod === 'jazzcash') {
+                const jazzcashNumber = document.getElementById('jazzcashNumber').value.replace(/\D/g, '');
+                
+                if (!jazzcashNumber || jazzcashNumber.length < 10) {
+                    showToast('Please enter a valid mobile number');
+                    return;
+                }
+            }
+
             // Get form data
             const formData = {
                 fullName: document.getElementById('fullName').value,
@@ -94,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 address: document.getElementById('address').value,
                 city: document.getElementById('city').value,
                 area: document.getElementById('area').value,
-                payment: document.querySelector('input[name="payment"]:checked').value,
+                payment: paymentMethod,
                 instructions: document.getElementById('instructions').value,
                 items: CartManager.getCart(),
                 subtotal: CartManager.getTotal(),

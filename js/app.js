@@ -144,36 +144,49 @@ function renderMenuItems(category = 'all') {
 // ===== Carousel Functions =====
 let currentSlide = 1;
 const totalSlides = 3;
+let isAnimating = false;
 
 function showSlide(slideNum) {
+    if (isAnimating || slideNum === currentSlide) return;
+    isAnimating = true;
+    
     const slides = document.querySelectorAll('.carousel-slide');
     const dots = document.querySelectorAll('.dot');
     
-    slides.forEach((slide, index) => {
-        slide.classList.remove('active');
-        if (index === slideNum - 1) {
-            slide.classList.add('active');
-        }
-    });
+    // Get current and next slide
+    const currentSlideEl = slides[currentSlide - 1];
+    const nextSlideEl = slides[slideNum - 1];
     
+    // Remove active class from current, add sliding-out
+    currentSlideEl.classList.remove('active');
+    currentSlideEl.classList.add('sliding-out');
+    
+    // Add sliding-in to next slide
+    nextSlideEl.classList.add('sliding-in');
+    
+    // Update dots
     dots.forEach((dot, index) => {
-        dot.classList.remove('active');
-        if (index === slideNum - 1) {
-            dot.classList.add('active');
-        }
+        dot.classList.toggle('active', index === slideNum - 1);
     });
     
-    currentSlide = slideNum;
+    // Clean up after animation
+    setTimeout(() => {
+        currentSlideEl.classList.remove('sliding-out');
+        nextSlideEl.classList.remove('sliding-in');
+        nextSlideEl.classList.add('active');
+        currentSlide = slideNum;
+        isAnimating = false;
+    }, 600);
 }
 
 function nextSlide() {
-    currentSlide = currentSlide < totalSlides ? currentSlide + 1 : 1;
-    showSlide(currentSlide);
+    const next = currentSlide < totalSlides ? currentSlide + 1 : 1;
+    showSlide(next);
 }
 
 function prevSlide() {
-    currentSlide = currentSlide > 1 ? currentSlide - 1 : totalSlides;
-    showSlide(currentSlide);
+    const prev = currentSlide > 1 ? currentSlide - 1 : totalSlides;
+    showSlide(prev);
 }
 
 // ===== Initialize Carousel =====
@@ -181,6 +194,12 @@ function initCarousel() {
     const prevBtn = document.getElementById('carouselPrev');
     const nextBtn = document.getElementById('carouselNext');
     const dots = document.querySelectorAll('.dot');
+    const slides = document.querySelectorAll('.carousel-slide');
+    
+    // Set initial slide state
+    if (slides.length > 0) {
+        slides[0].classList.add('active');
+    }
     
     if (prevBtn) {
         prevBtn.addEventListener('click', prevSlide);
@@ -221,15 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.classList.add('active');
             
             const category = btn.dataset.category;
-            
-            if (category === 'all') {
-                window.location.href = 'index.html#menu';
-            } else {
-                window.location.href = 'index.html#menu';
-                setTimeout(() => {
-                    renderMenuItems(category);
-                }, 100);
-            }
+            renderMenuItems(category);
         });
     });
     
@@ -406,6 +417,125 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
+    // ===== Order Modal =====
+    const orderModal = document.getElementById('orderModal');
+    const orderModalMenu = document.getElementById('orderModalMenu');
+    let currentOrderCategory = 'all';
+    
+    // Populate order modal with menu items
+    function populateOrderModal(category = 'all') {
+        if (!orderModalMenu) return;
+        const items = DataManager.getItemsByCategory(category);
+        
+        if (items.length === 0) {
+            orderModalMenu.innerHTML = '<div class="no-items">No items found</div>';
+            return;
+        }
+        
+        orderModalMenu.innerHTML = items.map((item, idx) => `
+            <div class="order-menu-item" data-id="${item.id}" data-name="${item.name}" data-prices='${JSON.stringify(item.prices).replace(/'/g, "&#39;")}'>
+                <img src="${item.image}" alt="${item.name}">
+                <div class="order-menu-item-info">
+                    <div class="order-menu-item-name">${item.name}</div>
+                    <div class="order-menu-item-category">${item.category}</div>
+                    <div class="order-menu-item-price">Rs. ${item.prices.small} - ${item.prices.large}</div>
+                </div>
+                <button class="order-add-btn" data-idx="${idx}">
+                    <i class="fas fa-cart-plus"></i> Add
+                </button>
+            </div>
+        `).join('');
+        
+        // Add event listeners for add buttons
+        document.querySelectorAll('.order-add-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const itemEl = this.closest('.order-menu-item');
+                const id = parseInt(itemEl.dataset.id);
+                const name = itemEl.dataset.name;
+                const prices = JSON.parse(itemEl.dataset.prices.replace(/&#39;/g, "'"));
+                addToCartFromModal(id, name, prices);
+            });
+        });
+    }
+    
+    // Add to cart from modal
+    function addToCartFromModal(id, name, prices) {
+        // Get existing cart
+        let cart = JSON.parse(localStorage.getItem('foodiehub_cart')) || [];
+        
+        // Create item object
+        const item = {
+            id: id,
+            name: name,
+            size: 'medium',
+            prices: prices,
+            price: prices.medium,
+            quantity: 1
+        };
+        
+        // Check if item already exists
+        const existingIndex = cart.findIndex(cartItem => 
+            cartItem.id === item.id && cartItem.size === item.size
+        );
+        
+        if (existingIndex > -1) {
+            cart[existingIndex].quantity += 1;
+        } else {
+            cart.push(item);
+        }
+        
+        // Save to localStorage
+        localStorage.setItem('foodiehub_cart', JSON.stringify(cart));
+        
+        // Update cart count - find all cart count elements
+        const cartCounts = document.querySelectorAll('#cartCount');
+        const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
+        cartCounts.forEach(el => {
+            if (el) el.textContent = totalItems;
+        });
+        
+        // Show toast notification
+        showToast(`${name} added to cart!`);
+    }
+    
+    // Open order modal
+    document.querySelectorAll('.order-now-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (orderModal) {
+                currentOrderCategory = 'all';
+                populateOrderModal('all');
+                // Update active filter button
+                document.querySelectorAll('.order-filter-btn').forEach(b => b.classList.remove('active'));
+                document.querySelector('.order-filter-btn[data-category="all"]')?.classList.add('active');
+                orderModal.classList.add('show');
+            }
+        });
+    });
+    
+    // Filter buttons in order modal
+    document.querySelectorAll('.order-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.order-filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const category = btn.dataset.category;
+            currentOrderCategory = category;
+            populateOrderModal(category);
+        });
+    });
+    
+    // Close order modal
+    document.getElementById('orderModalClose')?.addEventListener('click', () => {
+        orderModal?.classList.remove('show');
+    });
+    
+    // Close order modal when clicking overlay
+    orderModal?.addEventListener('click', (e) => {
+        if (e.target === orderModal) {
+            orderModal.classList.remove('show');
+        }
+    });
+    
     // Order type toggle
     document.querySelectorAll('.order-type-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -430,6 +560,11 @@ document.addEventListener('DOMContentLoaded', () => {
                                                address.city_district || address.county || '';
                             }
                             
+                            // Update navbar immediately
+                            const fullLocation = detectedArea ? `${detectedArea}, Karachi` : 'Current Location';
+                            updateLocationDisplay(fullLocation);
+                            localStorage.setItem('foodiehub_location', fullLocation);
+                            
                             // Populate search box with detected area
                             const searchInput = document.getElementById('locationSearch');
                             searchInput.value = detectedArea;
@@ -437,39 +572,39 @@ document.addEventListener('DOMContentLoaded', () => {
                             // Filter location list based on detected area (without city suffix)
                             populateLocationList(karachiAreas, detectedArea);
                             
-                            // Auto-select the matching area item if exists
-                            setTimeout(() => {
-                                const selectBtn = document.getElementById('selectLocationBtn');
-                                const locationList = document.getElementById('locationList');
-                                
-                                // Try to find exact or partial match
-                                let selectedItem = locationList.querySelector(`[data-area="${detectedArea}"]`);
-                                
-                                // If no exact match, try first item that partially matches
-                                if (!selectedItem) {
-                                    const allItems = locationList.querySelectorAll('.location-item');
-                                    allItems.forEach(item => {
-                                        const areaName = item.dataset.area.toLowerCase();
-                                        if (detectedArea && areaName.includes(detectedArea.toLowerCase()) || 
-                                            detectedArea.toLowerCase().includes(areaName)) {
-                                            selectedItem = item;
-                                        }
-                                    });
-                                }
-                                
-                                // If still no match, select first item
-                                if (!selectedItem) {
-                                    selectedItem = locationList.querySelector('.location-item');
-                                }
-                                
-                                if (selectedItem) {
-                                    locationList.querySelectorAll('.location-item').forEach(i => i.classList.remove('selected'));
-                                    selectedItem.classList.add('selected');
-                                    selectBtn.disabled = false;
-                                }
-                            }, 100);
+                            // Auto-select the matching area item
+                            const selectBtn = document.getElementById('selectLocationBtn');
+                            const selectBtnText = document.getElementById('selectBtnText');
+                            const locationList = document.getElementById('locationList');
                             
-                            showToast(`Detected: ${detectedArea || 'Current Location'}`);
+                            // Change button to "Close" since location is already updated
+                            selectBtnText.textContent = 'Close';
+                            selectBtn.disabled = false;
+                            
+                            // Try to find exact match first
+                            let selectedItem = null;
+                            const allItems = locationList.querySelectorAll('.location-item');
+                            
+                            allItems.forEach(item => {
+                                const areaName = item.dataset.area.toLowerCase();
+                                if (detectedArea && (areaName === detectedArea.toLowerCase() || 
+                                    areaName.includes(detectedArea.toLowerCase()) || 
+                                    detectedArea.toLowerCase().includes(areaName))) {
+                                    selectedItem = item;
+                                }
+                            });
+                            
+                            // If no match found, select first item
+                            if (!selectedItem && allItems.length > 0) {
+                                selectedItem = allItems[0];
+                            }
+                            
+                            if (selectedItem) {
+                                locationList.querySelectorAll('.location-item').forEach(i => i.classList.remove('selected'));
+                                selectedItem.classList.add('selected');
+                            }
+                            
+                            showToast(`Location updated to ${fullLocation}`);
                         })
                         .catch(() => {
                             showToast('Could not detect location');
@@ -492,6 +627,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Select location button
     document.getElementById('selectLocationBtn')?.addEventListener('click', () => {
         const selected = document.querySelector('.location-item.selected');
+        const selectBtnText = document.getElementById('selectBtnText');
+        
+        // If button says "Close", just close the modal
+        if (selectBtnText && selectBtnText.textContent === 'Close') {
+            document.getElementById('locationModal').classList.remove('show');
+            return;
+        }
+        
         if (selected) {
             const area = selected.dataset.area;
             const fullLocation = `${area}, Karachi`;
@@ -499,7 +642,6 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('foodiehub_location', fullLocation);
             
             // Update button text to "Update Location" for future use
-            const selectBtnText = document.getElementById('selectBtnText');
             if (selectBtnText) {
                 selectBtnText.textContent = 'Update Location';
             }

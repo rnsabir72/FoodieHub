@@ -63,9 +63,38 @@
             </div>
           </div>
 
+          <!-- Order Now Modal -->
+          <div class="order-modal-overlay" id="orderModal">
+            <div class="order-modal">
+              <button class="order-modal-close" id="orderModalClose">
+                <i class="fas fa-times"></i>
+              </button>
+              <div class="order-modal-header">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Place Your Order</span>
+              </div>
+              <div class="order-modal-filters">
+                <button class="order-filter-btn active" data-category="all">All</button>
+                <button class="order-filter-btn" data-category="burger">Burgers</button>
+                <button class="order-filter-btn" data-category="pizza">Pizzas</button>
+                <button class="order-filter-btn" data-category="sandwich">Sandwiches</button>
+              </div>
+              <div class="order-modal-menu" id="orderModalMenu">
+                <!-- Menu items will be populated here -->
+              </div>
+              <div class="order-modal-footer">
+                <div class="call-to-order">
+                  <i class="fas fa-phone"></i>
+                  <span>Or call to order:</span>
+                  <a href="tel:+92 333 3501801" class="phone-number">+92 333 3501801</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <button class="contact-number">
-           <i class="fas fa-phone"></i>
-            <span>+92-300-1234567</span>
+            <i class="fas fa-phone"></i>
+            <span>+92 333 3501801</span>
           </button>
 
           </div>
@@ -75,8 +104,12 @@
           <i class="fas fa-utensils"></i> FoodieHub
         </a>
 
-        <!-- Right Side: Toggle Menu -->
+        <!-- Right Side: Toggle Menu & Cart -->
         <div class="nav-right">
+          <a href="cart.html" class="cart-link">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count" id="cartCount">0</span>
+          </a>
           <div class="toggle-menu">
             <button class="toggle-btn" id="toggleMenuBtn">
               <i class="fas fa-bars"></i>
@@ -120,10 +153,10 @@
                 <i class="fas fa-utensils"></i>
                 Explore Menu
               </a>
-              <a href="tel:+92-300-1234567" class="btn btn-secondary btn-large">
+              <button class="btn btn-secondary btn-large order-now-btn">
                 <i class="fas fa-phone"></i>
                 Order Now
-              </a>
+              </button>
             </div>
             <div class="cooking-stats">
               <div class="stat-item">
@@ -154,10 +187,10 @@
                 <i class="fas fa-utensils"></i>
                 Explore Menu
               </a>
-              <a href="tel:+92-300-1234567" class="btn btn-secondary btn-large">
+              <button class="btn btn-secondary btn-large order-now-btn">
                 <i class="fas fa-phone"></i>
                 Order Now
-              </a>
+              </button>
             </div>
             <div class="cooking-stats">
               <div class="stat-item">
@@ -188,10 +221,10 @@
                 <i class="fas fa-utensils"></i>
                 Explore Menu
               </a>
-              <a href="tel:+92-300-1234567" class="btn btn-secondary btn-large">
+              <button class="btn btn-secondary btn-large order-now-btn">
                 <i class="fas fa-phone"></i>
                 Order Now
-              </a>
+              </button>
             </div>
             <div class="cooking-stats">
               <div class="stat-item">
@@ -271,7 +304,7 @@
           </div>
           <div class="footer-contact">
             <h4>Contact Us</h4>
-            <p><i class="fas fa-phone"></i> +92 300 1234567</p>
+            <p><i class="fas fa-phone"></i> +92 333 3501801</p>
             <p><i class="fas fa-envelope"></i> info@foodiehub.com</p>
             <p><i class="fas fa-map-marker-alt"></i> Karachi, Pakistan</p>
           </div>
