@@ -119,6 +119,7 @@ img {
     min-height: 35px;
     position: relative;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    touch-action: manipulation;
 }
 
 .location-selector:hover {
@@ -253,6 +254,7 @@ img {
     min-width: 44px;
     min-height: 44px;
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 .toggle-btn:hover {
@@ -1287,6 +1289,9 @@ img {
     top: 0;
     left: 0;
     width: 100%;
+    max-width: 100vw;
+    overflow: hidden;
+    box-sizing: border-box;
     opacity: 0;
     z-index: 1;
 }
@@ -3269,6 +3274,8 @@ img {
     font-weight: 600;
     color: #5a4a3a;
     font-size: 0.75rem;
+    pointer-events: auto;
+    touch-action: manipulation;
 }
 
 .mobile-location:hover {
@@ -3318,6 +3325,25 @@ img {
         display: flex;
         align-items: center;
         gap: 8px;
+        z-index: 100;
+        position: relative;
+    }
+    
+    /* Ensure location button is always visible and clickable */
+    .mobile-location {
+        z-index: 101;
+        position: relative;
+        pointer-events: auto;
+        cursor: pointer;
+    }
+    
+    /* Hero overflow fix for mobile */
+    .hero {
+        overflow: hidden;
+    }
+    
+    .hero-carousel {
+        overflow: hidden;
     }
     
     /* Navbar Mobile Full Restructure */
@@ -3394,6 +3420,8 @@ img {
         align-items: center;
         gap: 10px;
         order: 2;
+        z-index: 100;
+        position: relative;
     }
     
     .cart-link {
@@ -3523,6 +3551,12 @@ img {
 
     .hero {
         padding: 60px 15px;
+        overflow: hidden;
+    }
+    
+    .hero-carousel {
+        margin: 0 -15px;
+        overflow: hidden;
     }
 
     .hero-buttons {
