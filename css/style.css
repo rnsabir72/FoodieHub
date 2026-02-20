@@ -79,8 +79,11 @@ img {
 
 .navbar-full {
     width: 100%;
-    max-width: 100%;
+    max-width: 1200px;
     padding: 0 20px;
+    margin: 0 auto 8px auto;
+    left: 0;
+    right: 0;
 }
 
 .navbar-admin {
@@ -1719,6 +1722,9 @@ img {
     margin: 20px 0;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .filter-buttons {
@@ -1759,6 +1765,8 @@ img {
 /* ===== Menu Section ===== */
 .menu-section {
     padding: 20px 0 60px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .menu-grid {
@@ -2962,8 +2970,13 @@ img {
 .footer {
     background: #5a4a3a;
     color: #ffffff;
-    padding: 50px 0 0;
+    padding: 50px 20px 0;
     margin-top: 40px;
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: var(--radius);
 }
 
 .footer-content {
@@ -2972,6 +2985,8 @@ img {
     gap: 40px;
     padding-bottom: 30px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .footer-brand h3 {
