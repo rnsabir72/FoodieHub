@@ -235,25 +235,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterBtns = document.querySelectorAll('.filter-btn');
     
     filterBtns.forEach(btn => {
-        let filterMainHandled = false;
-        const handleFilterClick = (e) => {
-            if (filterMainHandled) {
-                filterMainHandled = false;
-                return;
-            }
-            filterMainHandled = true;
-            if (e) e.preventDefault();
+        btn.addEventListener('click', function() {
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             
             const category = btn.dataset.category;
             renderMenuItems(category);
-        };
-        
-        btn.addEventListener('click', handleFilterClick);
-        btn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            handleFilterClick(e);
         });
     });
     
@@ -343,13 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Main location selector click handler - Opens modal
     if (locationSelector) {
-        let mainLocationHandled = false;
-        const handleLocationClick = (e) => {
-            if (mainLocationHandled) {
-                mainLocationHandled = false;
-                return;
-            }
-            mainLocationHandled = true;
+        locationSelector.addEventListener('click', function(e) {
             e.stopPropagation();
             const modal = document.getElementById('locationModal');
             modal.classList.add('show');
@@ -383,25 +364,14 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Populate location list
             populateLocationList(karachiAreas);
-        };
-        
-        locationSelector.addEventListener('click', handleLocationClick);
-        locationSelector.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            handleLocationClick(e);
         });
     }
     
     // Mobile Location Selector - Opens modal
     const locationSelectorMobile = document.getElementById('locationSelectorMobile');
     if (locationSelectorMobile) {
-        let mobileLocationHandled = false;
-        const handleMobileLocationClick = (e) => {
-            if (mobileLocationHandled) {
-                mobileLocationHandled = false;
-                return;
-            }
-            mobileLocationHandled = true;
+        // Use click-only approach for better mobile compatibility
+        locationSelectorMobile.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             const modal = document.getElementById('locationModal');
@@ -433,12 +403,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             populateLocationList(karachiAreas);
-        };
-        
-        locationSelectorMobile.addEventListener('click', handleMobileLocationClick);
-        locationSelectorMobile.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            handleMobileLocationClick(e);
         });
     }
     
@@ -485,21 +449,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Close modal with X button
     const locationModalClose = document.getElementById('locationModalClose');
     if (locationModalClose) {
-        let locationCloseHandled = false;
-        const handleLocationClose = (e) => {
-            if (locationCloseHandled) {
-                locationCloseHandled = false;
-                return;
-            }
-            locationCloseHandled = true;
-            if (e) e.preventDefault();
+        locationModalClose.addEventListener('click', function() {
             document.getElementById('locationModal').classList.remove('show');
-        };
-
-        locationModalClose.addEventListener('click', handleLocationClose);
-        locationModalClose.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            handleLocationClose(e);
         });
     }
     
@@ -602,13 +553,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Open order modal
     document.querySelectorAll('.order-now-btn').forEach(btn => {
-        let orderHandled = false;
-        const handleOrderClick = (e) => {
-            if (orderHandled) {
-                orderHandled = false;
-                return;
-            }
-            orderHandled = true;
+        btn.addEventListener('click', function(e) {
             e.preventDefault();
             if (orderModal) {
                 currentOrderCategory = 'all';
@@ -618,56 +563,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.querySelector('.order-filter-btn[data-category="all"]')?.classList.add('active');
                 orderModal.classList.add('show');
             }
-        };
-        
-        btn.addEventListener('click', handleOrderClick);
-        btn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            handleOrderClick(e);
         });
     });
     
     // Filter buttons in order modal
     document.querySelectorAll('.order-filter-btn').forEach(btn => {
-        let filterHandled = false;
-        const handleFilterClick = (e) => {
-            if (filterHandled) {
-                filterHandled = false;
-                return;
-            }
-            filterHandled = true;
-            if (e) e.preventDefault();
+        btn.addEventListener('click', function() {
             document.querySelectorAll('.order-filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             const category = btn.dataset.category;
             currentOrderCategory = category;
             populateOrderModal(category);
-        };
-        
-        btn.addEventListener('click', handleFilterClick);
-        btn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            handleFilterClick(e);
         });
     });
     
     // Close order modal
     const orderModalClose = document.getElementById('orderModalClose');
     if (orderModalClose) {
-        let closeHandled = false;
-        const handleCloseClick = (e) => {
-            if (closeHandled) {
-                closeHandled = false;
-                return;
-            }
-            closeHandled = true;
+        orderModalClose.addEventListener('click', function() {
             orderModal?.classList.remove('show');
-        };
-
-        orderModalClose.addEventListener('click', handleCloseClick);
-        orderModalClose.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            handleCloseClick(e);
         });
     }
     
@@ -824,24 +738,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleDropdown = document.getElementById('toggleDropdown');
     
     if (toggleBtn && toggleDropdown) {
-        let toggleHandled = false;
-        // Use touchend for better mobile support
-        const handleToggle = (e) => {
-            if (toggleHandled) {
-                toggleHandled = false;
-                return;
-            }
-            toggleHandled = true;
+        // Use click-only for better mobile support
+        toggleBtn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             toggleDropdown.classList.toggle('show');
-        };
-        
-        // Add both click and touchend events for better mobile compatibility
-        toggleBtn.addEventListener('click', handleToggle);
-        toggleBtn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            handleToggle(e);
         });
         
         document.addEventListener('click', (e) => {

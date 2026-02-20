@@ -3322,19 +3322,24 @@ img {
 
 @media (max-width: 768px) {
     .mobile-nav-extras {
-        display: flex;
+        display: flex !important;
         align-items: center;
         gap: 8px;
         z-index: 100;
         position: relative;
+        visibility: visible;
+        opacity: 1;
     }
     
     /* Ensure location button is always visible and clickable */
     .mobile-location {
         z-index: 101;
         position: relative;
-        pointer-events: auto;
+        pointer-events: auto !important;
         cursor: pointer;
+        visibility: visible;
+        opacity: 1;
+        display: flex !important;
     }
     
     /* Hero overflow fix for mobile */
