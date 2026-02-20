@@ -477,6 +477,20 @@ img {
     gap: 10px;
     color: var(--primary);
     margin-bottom: 16px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+}
+
+.use-current-location-btn:active {
+    background: var(--primary);
+    color: #ffffff;
+    transform: scale(0.98);
+}
+
+.use-current-location-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 .use-current-location-btn:hover {
@@ -3999,4 +4013,12 @@ img {
 
 .input-icon input {
     padding-left: 35px; /* create space for icon */
+}
+
+
+.location-selector {
+    position: relative;
+    z-index: 1001; /* Higher than the navbar */
+    touch-action: manipulation; /* Optimizes for tapping */
+    -webkit-tap-highlight-color: transparent; /* Removes the gray box on tap */
 }

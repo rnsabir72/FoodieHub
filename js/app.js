@@ -265,6 +265,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Auto-detect GPS location on page load
     function autoDetectLocation() {
+        if (!currentLocationSpan) return;
+        
         if (navigator.geolocation) {
             currentLocationSpan.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Detecting...</span>';
 
@@ -299,19 +301,39 @@ document.addEventListener('DOMContentLoaded', () => {
                         })
                         .catch(error => {
                             console.error('Geocoding error:', error);
-                            const location = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                            const location = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
                             updateLocationDisplay(location);
                             localStorage.setItem('foodiehub_location', location);
                         });
                 },
                 (error) => {
-                    // Fall back to saved location or default
+                    // Show error message and fall back to saved location or default
+                    console.error('Geolocation error:', error.code, error.message);
+                    let errorMessage = 'Unable to detect location';
+                    
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = 'Location permission denied';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = 'Location information unavailable';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = 'Location request timed out';
+                            break;
+                    }
+                    
                     const savedLocation = localStorage.getItem('foodiehub_location');
                     if (savedLocation) {
                         updateLocationDisplay(savedLocation);
                     } else {
                         updateLocationDisplay('Clifton, Karachi');
                     }
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
                 }
             );
         } else {
@@ -613,84 +635,123 @@ document.addEventListener('DOMContentLoaded', () => {
     // Use current location button
     const useCurrentLocationBtn = document.getElementById('useCurrentLocation');
     if (useCurrentLocationBtn) {
-        useCurrentLocationBtn.addEventListener('click', () => {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const { latitude, longitude } = position.coords;
-                        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                let detectedArea = '';
-                                if (data.address) {
-                                    const address = data.address;
-                                    detectedArea = address.suburb || address.neighbourhood || address.road || 
-                                                   address.city_district || address.county || '';
-                                }
-                                
-                                // Update navbar immediately
-                                const fullLocation = detectedArea ? `${detectedArea}, Karachi` : 'Current Location';
-                                updateLocationDisplay(fullLocation);
-                                localStorage.setItem('foodiehub_location', fullLocation);
-                                
-                                // Populate search box with detected area
-                                const searchInput = document.getElementById('locationSearch');
-                                searchInput.value = detectedArea;
-                                
-                                // Filter location list based on detected area (without city suffix)
-                                populateLocationList(karachiAreas, detectedArea);
-                                
-                                // Auto-select the matching area item
-                                const selectBtn = document.getElementById('selectLocationBtn');
-                                const selectBtnText = document.getElementById('selectBtnText');
-                                const locationList = document.getElementById('locationList');
-                                
-                                // Change button to "Close" since location is already updated
-                                selectBtnText.textContent = 'Close';
-                                selectBtn.disabled = false;
-                                
-                                // Try to find exact match first
-                                let selectedItem = null;
-                                const allItems = locationList.querySelectorAll('.location-item');
-                                
-                                allItems.forEach(item => {
-                                    const areaName = item.dataset.area.toLowerCase();
-                                    if (detectedArea && (areaName === detectedArea.toLowerCase() || 
-                                        areaName.includes(detectedArea.toLowerCase()) || 
-                                        detectedArea.toLowerCase().includes(areaName))) {
-                                        selectedItem = item;
-                                    }
-                                });
-                                
-                                // If no match found, select first item
-                                if (!selectedItem && allItems.length > 0) {
-                                    selectedItem = allItems[0];
-                                }
-                                
-                                if (selectedItem) {
-                                    locationList.querySelectorAll('.location-item').forEach(i => i.classList.remove('selected'));
-                                    selectedItem.classList.add('selected');
-                                }
-                                
-                                showToast(`Location updated to ${fullLocation}`);
-                            })
-                            .catch(() => {
-                                showToast('Could not detect location');
-                            });
-                    },
-                    () => {
-                        showToast('Location permission denied');
-                    }
-                );
-            } else {
-                showToast('Geolocation not supported');
+        // Unified handler for both click and touch
+        const handleLocationDetection = (e) => {
+            if (e && e.type === 'touchend') {
+                e.preventDefault();
             }
-        });
-        
-        useCurrentLocationBtn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            useCurrentLocationBtn.click();
-        });
+            
+            if (!navigator.geolocation) {
+                showToast('Geolocation is not supported on this device');
+                return;
+            }
+
+            // Show loading state
+            const btnText = useCurrentLocationBtn.querySelector('span') || useCurrentLocationBtn;
+            const originalHTML = useCurrentLocationBtn.innerHTML;
+            useCurrentLocationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Detecting...';
+            useCurrentLocationBtn.disabled = true;
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            let detectedArea = '';
+                            if (data.address) {
+                                const address = data.address;
+                                detectedArea = address.suburb || address.neighbourhood || address.road || 
+                                               address.city_district || address.county || '';
+                            }
+                            
+                            // Update navbar immediately
+                            const fullLocation = detectedArea ? `${detectedArea}, Karachi` : 'Current Location';
+                            updateLocationDisplay(fullLocation);
+                            localStorage.setItem('foodiehub_location', fullLocation);
+                            
+                            // Populate search box with detected area
+                            const searchInput = document.getElementById('locationSearch');
+                            if (searchInput) searchInput.value = detectedArea;
+                            
+                            // Filter location list based on detected area (without city suffix)
+                            populateLocationList(karachiAreas, detectedArea);
+                            
+                            // Auto-select the matching area item
+                            const selectBtn = document.getElementById('selectLocationBtn');
+                            const selectBtnText = document.getElementById('selectBtnText');
+                            const locationList = document.getElementById('locationList');
+                            
+                            // Change button to "Close" since location is already updated
+                            if (selectBtnText) selectBtnText.textContent = 'Close';
+                            if (selectBtn) selectBtn.disabled = false;
+                            
+                            // Try to find exact match first
+                            let selectedItem = null;
+                            const allItems = locationList ? locationList.querySelectorAll('.location-item') : [];
+                            
+                            allItems.forEach(item => {
+                                const areaName = item.dataset.area.toLowerCase();
+                                if (detectedArea && (areaName === detectedArea.toLowerCase() || 
+                                    areaName.includes(detectedArea.toLowerCase()) || 
+                                    detectedArea.toLowerCase().includes(areaName))) {
+                                    selectedItem = item;
+                                }
+                            });
+                            
+                            // If no match found, select first item
+                            if (!selectedItem && allItems.length > 0) {
+                                selectedItem = allItems[0];
+                            }
+                            
+                            if (selectedItem) {
+                                locationList.querySelectorAll('.location-item').forEach(i => i.classList.remove('selected'));
+                                selectedItem.classList.add('selected');
+                            }
+                            
+                            // Reset button state
+                            useCurrentLocationBtn.innerHTML = originalHTML;
+                            useCurrentLocationBtn.disabled = false;
+                            
+                            showToast(`Location updated to ${fullLocation}`);
+                        })
+                        .catch((error) => {
+                            console.error('Geocoding error:', error);
+                            useCurrentLocationBtn.innerHTML = originalHTML;
+                            useCurrentLocationBtn.disabled = false;
+                            showToast('Could not detect location. Please try again.');
+                        });
+                },
+                (error) => {
+                    console.error('Geolocation error:', error);
+                    useCurrentLocationBtn.innerHTML = originalHTML;
+                    useCurrentLocationBtn.disabled = false;
+                    
+                    let errorMessage = 'Location permission denied';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = 'Location permission denied. Please enable location access.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = 'Location information unavailable';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = 'Location request timed out. Please try again.';
+                            break;
+                    }
+                    showToast(errorMessage);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        };
+
+        useCurrentLocationBtn.addEventListener('click', handleLocationDetection);
+        useCurrentLocationBtn.addEventListener('touchend', handleLocationDetection);
     }
     
     // Location search
