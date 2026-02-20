@@ -235,12 +235,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterBtns = document.querySelectorAll('.filter-btn');
     
     filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
+        let filterMainHandled = false;
+        const handleFilterClick = (e) => {
+            if (filterMainHandled) {
+                filterMainHandled = false;
+                return;
+            }
+            filterMainHandled = true;
+            if (e) e.preventDefault();
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             
             const category = btn.dataset.category;
             renderMenuItems(category);
+        };
+        
+        btn.addEventListener('click', handleFilterClick);
+        btn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            handleFilterClick(e);
         });
     });
     
@@ -330,7 +343,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Main location selector click handler - Opens modal
     if (locationSelector) {
+        let mainLocationHandled = false;
         const handleLocationClick = (e) => {
+            if (mainLocationHandled) {
+                mainLocationHandled = false;
+                return;
+            }
+            mainLocationHandled = true;
             e.stopPropagation();
             const modal = document.getElementById('locationModal');
             modal.classList.add('show');
@@ -367,13 +386,22 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         locationSelector.addEventListener('click', handleLocationClick);
-        locationSelector.addEventListener('touchend', handleLocationClick);
+        locationSelector.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            handleLocationClick(e);
+        });
     }
     
     // Mobile Location Selector - Opens modal
     const locationSelectorMobile = document.getElementById('locationSelectorMobile');
     if (locationSelectorMobile) {
+        let mobileLocationHandled = false;
         const handleMobileLocationClick = (e) => {
+            if (mobileLocationHandled) {
+                mobileLocationHandled = false;
+                return;
+            }
+            mobileLocationHandled = true;
             e.preventDefault();
             e.stopPropagation();
             const modal = document.getElementById('locationModal');
@@ -408,7 +436,10 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         locationSelectorMobile.addEventListener('click', handleMobileLocationClick);
-        locationSelectorMobile.addEventListener('touchend', handleMobileLocationClick);
+        locationSelectorMobile.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            handleMobileLocationClick(e);
+        });
     }
     
     // Function to populate location list
@@ -454,13 +485,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Close modal with X button
     const locationModalClose = document.getElementById('locationModalClose');
     if (locationModalClose) {
-        locationModalClose.addEventListener('click', () => {
+        let locationCloseHandled = false;
+        const handleLocationClose = (e) => {
+            if (locationCloseHandled) {
+                locationCloseHandled = false;
+                return;
+            }
+            locationCloseHandled = true;
+            if (e) e.preventDefault();
             document.getElementById('locationModal').classList.remove('show');
-        });
-        
+        };
+
+        locationModalClose.addEventListener('click', handleLocationClose);
         locationModalClose.addEventListener('touchend', (e) => {
             e.preventDefault();
-            locationModalClose.click();
+            handleLocationClose(e);
         });
     }
     
@@ -563,7 +602,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Open order modal
     document.querySelectorAll('.order-now-btn').forEach(btn => {
+        let orderHandled = false;
         const handleOrderClick = (e) => {
+            if (orderHandled) {
+                orderHandled = false;
+                return;
+            }
+            orderHandled = true;
             e.preventDefault();
             if (orderModal) {
                 currentOrderCategory = 'all';
@@ -576,12 +621,22 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         btn.addEventListener('click', handleOrderClick);
-        btn.addEventListener('touchend', handleOrderClick);
+        btn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            handleOrderClick(e);
+        });
     });
     
     // Filter buttons in order modal
     document.querySelectorAll('.order-filter-btn').forEach(btn => {
-        const handleFilterClick = () => {
+        let filterHandled = false;
+        const handleFilterClick = (e) => {
+            if (filterHandled) {
+                filterHandled = false;
+                return;
+            }
+            filterHandled = true;
+            if (e) e.preventDefault();
             document.querySelectorAll('.order-filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             const category = btn.dataset.category;
@@ -590,18 +645,30 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         btn.addEventListener('click', handleFilterClick);
-        btn.addEventListener('touchend', handleFilterClick);
+        btn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            handleFilterClick(e);
+        });
     });
     
     // Close order modal
     const orderModalClose = document.getElementById('orderModalClose');
     if (orderModalClose) {
-        const handleCloseClick = () => {
+        let closeHandled = false;
+        const handleCloseClick = (e) => {
+            if (closeHandled) {
+                closeHandled = false;
+                return;
+            }
+            closeHandled = true;
             orderModal?.classList.remove('show');
         };
-        
+
         orderModalClose.addEventListener('click', handleCloseClick);
-        orderModalClose.addEventListener('touchend', handleCloseClick);
+        orderModalClose.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            handleCloseClick(e);
+        });
     }
     
     // Close order modal when clicking overlay
@@ -757,8 +824,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleDropdown = document.getElementById('toggleDropdown');
     
     if (toggleBtn && toggleDropdown) {
+        let toggleHandled = false;
         // Use touchend for better mobile support
         const handleToggle = (e) => {
+            if (toggleHandled) {
+                toggleHandled = false;
+                return;
+            }
+            toggleHandled = true;
             e.preventDefault();
             e.stopPropagation();
             toggleDropdown.classList.toggle('show');
@@ -766,7 +839,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Add both click and touchend events for better mobile compatibility
         toggleBtn.addEventListener('click', handleToggle);
-        toggleBtn.addEventListener('touchend', handleToggle);
+        toggleBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            handleToggle(e);
+        });
         
         document.addEventListener('click', (e) => {
             if (!toggleBtn.contains(e.target) && !toggleDropdown.contains(e.target)) {

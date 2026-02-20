@@ -13,8 +13,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelector('.nav-links');
     
     if (mobileMenuBtn && navLinks) {
+        let mobileMenuHandled = false;
         const handleMobileMenu = (e) => {
+            if (mobileMenuHandled) {
+                mobileMenuHandled = false;
+                return;
+            }
+            mobileMenuHandled = true;
             if (e) e.preventDefault();
+            
             navLinks.classList.toggle('active');
             
             const icon = mobileMenuBtn.querySelector('i');
@@ -28,7 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         mobileMenuBtn.addEventListener('click', handleMobileMenu);
-        mobileMenuBtn.addEventListener('touchend', handleMobileMenu);
+        mobileMenuBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            handleMobileMenu(e);
+        });
         
         navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
@@ -37,6 +47,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-bars');
             });
+        });
+        
+        document.addEventListener('click', (e) => {
+            if (!mobileMenuBtn.contains(e.target) && !navLinks.contains(e.target)) {
+                navLinks.classList.remove('active');
+                const icon = mobileMenuBtn.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        document.addEventListener('touchend', (e) => {
+            if (!mobileMenuBtn.contains(e.target) && !navLinks.contains(e.target)) {
+                navLinks.classList.remove('active');
+                const icon = mobileMenuBtn.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
         });
     }
 

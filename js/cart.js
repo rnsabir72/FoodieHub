@@ -129,13 +129,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelector('.nav-links');
     
     if (mobileMenuBtn && navLinks) {
+        let mobileMenuHandled = false;
         const handleMobileMenu = (e) => {
+            if (mobileMenuHandled) {
+                mobileMenuHandled = false;
+                return;
+            }
+            mobileMenuHandled = true;
             if (e) e.preventDefault();
             navLinks.classList.toggle('active');
         };
         
         mobileMenuBtn.addEventListener('click', handleMobileMenu);
-        mobileMenuBtn.addEventListener('touchend', handleMobileMenu);
+        mobileMenuBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            handleMobileMenu(e);
+        });
 
         // Close menu when clicking a link
         navLinks.querySelectorAll('a').forEach(link => {
