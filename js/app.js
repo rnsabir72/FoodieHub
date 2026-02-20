@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Main location selector click handler - Opens modal
     if (locationSelector) {
-        locationSelector.addEventListener('click', (e) => {
+        const handleLocationClick = (e) => {
             e.stopPropagation();
             const modal = document.getElementById('locationModal');
             modal.classList.add('show');
@@ -364,7 +364,51 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Populate location list
             populateLocationList(karachiAreas);
-        });
+        };
+        
+        locationSelector.addEventListener('click', handleLocationClick);
+        locationSelector.addEventListener('touchend', handleLocationClick);
+    }
+    
+    // Mobile Location Selector - Opens modal
+    const locationSelectorMobile = document.getElementById('locationSelectorMobile');
+    if (locationSelectorMobile) {
+        const handleMobileLocationClick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const modal = document.getElementById('locationModal');
+            modal.classList.add('show');
+            
+            // Reset selection
+            const locationList = document.getElementById('locationList');
+            const selectBtn = document.getElementById('selectLocationBtn');
+            const searchInput = document.getElementById('locationSearch');
+            const selectBtnText = document.getElementById('selectBtnText');
+            
+            // Clear previous selection
+            document.querySelectorAll('.location-item').forEach(item => item.classList.remove('selected'));
+            selectBtn.disabled = true;
+            searchInput.value = '';
+            
+            // Check if location is already saved
+            const savedLocation = localStorage.getItem('foodiehub_location');
+            if (savedLocation) {
+                selectBtnText.textContent = 'Update Location';
+                const savedArea = savedLocation.split(',')[0].trim();
+                const existingItem = locationList.querySelector(`[data-area="${savedArea}"]`);
+                if (existingItem) {
+                    existingItem.classList.add('selected');
+                    selectBtn.disabled = false;
+                }
+            } else {
+                selectBtnText.textContent = 'Select';
+            }
+            
+            populateLocationList(karachiAreas);
+        };
+        
+        locationSelectorMobile.addEventListener('click', handleMobileLocationClick);
+        locationSelectorMobile.addEventListener('touchend', handleMobileLocationClick);
     }
     
     // Function to populate location list
@@ -384,14 +428,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add click handlers to all items
         const selectBtn = document.getElementById('selectLocationBtn');
         locationList.querySelectorAll('.location-item').forEach(item => {
-            item.addEventListener('click', () => {
+            const handleItemClick = () => {
                 // Remove selected from all
                 locationList.querySelectorAll('.location-item').forEach(i => i.classList.remove('selected'));
                 // Add selected to clicked
                 item.classList.add('selected');
                 // Enable select button
                 selectBtn.disabled = false;
-            });
+            };
+            
+            item.addEventListener('click', handleItemClick);
+            item.addEventListener('touchend', handleItemClick);
         });
         
         // If there's only one match, auto-select it
@@ -405,12 +452,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Close modal with X button
-    document.getElementById('locationModalClose')?.addEventListener('click', () => {
-        document.getElementById('locationModal').classList.remove('show');
-    });
+    const locationModalClose = document.getElementById('locationModalClose');
+    if (locationModalClose) {
+        locationModalClose.addEventListener('click', () => {
+            document.getElementById('locationModal').classList.remove('show');
+        });
+        
+        locationModalClose.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            locationModalClose.click();
+        });
+    }
     
     // Close modal when clicking overlay
     document.addEventListener('click', (e) => {
+        const modal = document.getElementById('locationModal');
+        if (e.target === modal) {
+            modal.classList.remove('show');
+        }
+    });
+    
+    // Close modal when touching overlay (mobile)
+    document.addEventListener('touchend', (e) => {
         const modal = document.getElementById('locationModal');
         if (e.target === modal) {
             modal.classList.remove('show');
@@ -500,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Open order modal
     document.querySelectorAll('.order-now-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        const handleOrderClick = (e) => {
             e.preventDefault();
             if (orderModal) {
                 currentOrderCategory = 'all';
@@ -510,24 +573,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.querySelector('.order-filter-btn[data-category="all"]')?.classList.add('active');
                 orderModal.classList.add('show');
             }
-        });
+        };
+        
+        btn.addEventListener('click', handleOrderClick);
+        btn.addEventListener('touchend', handleOrderClick);
     });
     
     // Filter buttons in order modal
     document.querySelectorAll('.order-filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
+        const handleFilterClick = () => {
             document.querySelectorAll('.order-filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             const category = btn.dataset.category;
             currentOrderCategory = category;
             populateOrderModal(category);
-        });
+        };
+        
+        btn.addEventListener('click', handleFilterClick);
+        btn.addEventListener('touchend', handleFilterClick);
     });
     
     // Close order modal
-    document.getElementById('orderModalClose')?.addEventListener('click', () => {
-        orderModal?.classList.remove('show');
-    });
+    const orderModalClose = document.getElementById('orderModalClose');
+    if (orderModalClose) {
+        const handleCloseClick = () => {
+            orderModal?.classList.remove('show');
+        };
+        
+        orderModalClose.addEventListener('click', handleCloseClick);
+        orderModalClose.addEventListener('touchend', handleCloseClick);
+    }
     
     // Close order modal when clicking overlay
     orderModal?.addEventListener('click', (e) => {
@@ -536,88 +611,106 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
+    // Close order modal when touching overlay (mobile)
+    orderModal?.addEventListener('touchend', (e) => {
+        if (e.target === orderModal) {
+            orderModal.classList.remove('show');
+        }
+    });
+    
     // Order type toggle
     document.querySelectorAll('.order-type-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
+        const handleTypeClick = () => {
             document.querySelectorAll('.order-type-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-        });
+        };
+        
+        btn.addEventListener('click', handleTypeClick);
+        btn.addEventListener('touchend', handleTypeClick);
     });
     
     // Use current location button
-    document.getElementById('useCurrentLocation')?.addEventListener('click', () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            let detectedArea = '';
-                            if (data.address) {
-                                const address = data.address;
-                                detectedArea = address.suburb || address.neighbourhood || address.road || 
-                                               address.city_district || address.county || '';
-                            }
-                            
-                            // Update navbar immediately
-                            const fullLocation = detectedArea ? `${detectedArea}, Karachi` : 'Current Location';
-                            updateLocationDisplay(fullLocation);
-                            localStorage.setItem('foodiehub_location', fullLocation);
-                            
-                            // Populate search box with detected area
-                            const searchInput = document.getElementById('locationSearch');
-                            searchInput.value = detectedArea;
-                            
-                            // Filter location list based on detected area (without city suffix)
-                            populateLocationList(karachiAreas, detectedArea);
-                            
-                            // Auto-select the matching area item
-                            const selectBtn = document.getElementById('selectLocationBtn');
-                            const selectBtnText = document.getElementById('selectBtnText');
-                            const locationList = document.getElementById('locationList');
-                            
-                            // Change button to "Close" since location is already updated
-                            selectBtnText.textContent = 'Close';
-                            selectBtn.disabled = false;
-                            
-                            // Try to find exact match first
-                            let selectedItem = null;
-                            const allItems = locationList.querySelectorAll('.location-item');
-                            
-                            allItems.forEach(item => {
-                                const areaName = item.dataset.area.toLowerCase();
-                                if (detectedArea && (areaName === detectedArea.toLowerCase() || 
-                                    areaName.includes(detectedArea.toLowerCase()) || 
-                                    detectedArea.toLowerCase().includes(areaName))) {
-                                    selectedItem = item;
+    const useCurrentLocationBtn = document.getElementById('useCurrentLocation');
+    if (useCurrentLocationBtn) {
+        useCurrentLocationBtn.addEventListener('click', () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                let detectedArea = '';
+                                if (data.address) {
+                                    const address = data.address;
+                                    detectedArea = address.suburb || address.neighbourhood || address.road || 
+                                                   address.city_district || address.county || '';
                                 }
+                                
+                                // Update navbar immediately
+                                const fullLocation = detectedArea ? `${detectedArea}, Karachi` : 'Current Location';
+                                updateLocationDisplay(fullLocation);
+                                localStorage.setItem('foodiehub_location', fullLocation);
+                                
+                                // Populate search box with detected area
+                                const searchInput = document.getElementById('locationSearch');
+                                searchInput.value = detectedArea;
+                                
+                                // Filter location list based on detected area (without city suffix)
+                                populateLocationList(karachiAreas, detectedArea);
+                                
+                                // Auto-select the matching area item
+                                const selectBtn = document.getElementById('selectLocationBtn');
+                                const selectBtnText = document.getElementById('selectBtnText');
+                                const locationList = document.getElementById('locationList');
+                                
+                                // Change button to "Close" since location is already updated
+                                selectBtnText.textContent = 'Close';
+                                selectBtn.disabled = false;
+                                
+                                // Try to find exact match first
+                                let selectedItem = null;
+                                const allItems = locationList.querySelectorAll('.location-item');
+                                
+                                allItems.forEach(item => {
+                                    const areaName = item.dataset.area.toLowerCase();
+                                    if (detectedArea && (areaName === detectedArea.toLowerCase() || 
+                                        areaName.includes(detectedArea.toLowerCase()) || 
+                                        detectedArea.toLowerCase().includes(areaName))) {
+                                        selectedItem = item;
+                                    }
+                                });
+                                
+                                // If no match found, select first item
+                                if (!selectedItem && allItems.length > 0) {
+                                    selectedItem = allItems[0];
+                                }
+                                
+                                if (selectedItem) {
+                                    locationList.querySelectorAll('.location-item').forEach(i => i.classList.remove('selected'));
+                                    selectedItem.classList.add('selected');
+                                }
+                                
+                                showToast(`Location updated to ${fullLocation}`);
+                            })
+                            .catch(() => {
+                                showToast('Could not detect location');
                             });
-                            
-                            // If no match found, select first item
-                            if (!selectedItem && allItems.length > 0) {
-                                selectedItem = allItems[0];
-                            }
-                            
-                            if (selectedItem) {
-                                locationList.querySelectorAll('.location-item').forEach(i => i.classList.remove('selected'));
-                                selectedItem.classList.add('selected');
-                            }
-                            
-                            showToast(`Location updated to ${fullLocation}`);
-                        })
-                        .catch(() => {
-                            showToast('Could not detect location');
-                        });
-                },
-                () => {
-                    showToast('Location permission denied');
-                }
-            );
-        } else {
-            showToast('Geolocation not supported');
-        }
-    });
+                    },
+                    () => {
+                        showToast('Location permission denied');
+                    }
+                );
+            } else {
+                showToast('Geolocation not supported');
+            }
+        });
+        
+        useCurrentLocationBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            useCurrentLocationBtn.click();
+        });
+    }
     
     // Location search
     document.getElementById('locationSearch')?.addEventListener('input', (e) => {
@@ -625,31 +718,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Select location button
-    document.getElementById('selectLocationBtn')?.addEventListener('click', () => {
-        const selected = document.querySelector('.location-item.selected');
-        const selectBtnText = document.getElementById('selectBtnText');
-        
-        // If button says "Close", just close the modal
-        if (selectBtnText && selectBtnText.textContent === 'Close') {
-            document.getElementById('locationModal').classList.remove('show');
-            return;
-        }
-        
-        if (selected) {
-            const area = selected.dataset.area;
-            const fullLocation = `${area}, Karachi`;
-            updateLocationDisplay(fullLocation);
-            localStorage.setItem('foodiehub_location', fullLocation);
+    const selectLocationBtn = document.getElementById('selectLocationBtn');
+    if (selectLocationBtn) {
+        selectLocationBtn.addEventListener('click', () => {
+            const selected = document.querySelector('.location-item.selected');
+            const selectBtnText = document.getElementById('selectBtnText');
             
-            // Update button text to "Update Location" for future use
-            if (selectBtnText) {
-                selectBtnText.textContent = 'Update Location';
+            // If button says "Close", just close the modal
+            if (selectBtnText && selectBtnText.textContent === 'Close') {
+                document.getElementById('locationModal').classList.remove('show');
+                return;
             }
             
-            showToast(`Location changed to ${fullLocation}!`);
-            document.getElementById('locationModal').classList.remove('show');
-        }
-    });
+            if (selected) {
+                const area = selected.dataset.area;
+                const fullLocation = `${area}, Karachi`;
+                updateLocationDisplay(fullLocation);
+                localStorage.setItem('foodiehub_location', fullLocation);
+                
+                // Update button text to "Update Location" for future use
+                if (selectBtnText) {
+                    selectBtnText.textContent = 'Update Location';
+                }
+                
+                showToast(`Location changed to ${fullLocation}!`);
+                document.getElementById('locationModal').classList.remove('show');
+            }
+        });
+        
+        selectLocationBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            selectLocationBtn.click();
+        });
+    }
     
     // ===== Toggle Menu =====
     const toggleBtn = document.getElementById('toggleMenuBtn');
