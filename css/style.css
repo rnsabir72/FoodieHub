@@ -1744,6 +1744,11 @@ img {
     flex-direction: column;
 }
 
+.menu-card .card-image,
+.menu-item .menu-item-image {
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
 .menu-card:hover,
 .menu-item:hover {
     transform: translateY(-8px);
@@ -1765,6 +1770,7 @@ img {
     position: relative;
     height: 200px;
     overflow: hidden;
+    border-radius: var(--radius) var(--radius) 0 0;
 }
 
 /* Menu Item Content - CENTERED */
