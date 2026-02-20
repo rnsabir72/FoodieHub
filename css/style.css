@@ -250,6 +250,9 @@ img {
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .toggle-btn:hover {
@@ -301,6 +304,9 @@ img {
     transition: var(--transition);
     color: #5a4a3a;
     font-size: 1rem;
+    min-width: 44px;
+    min-height: 44px;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-menu-btn:hover {
@@ -3377,6 +3383,9 @@ img {
         align-items: center;
         justify-content: center;
         order: 2;
+        min-width: 44px;
+        min-height: 44px;
+        -webkit-tap-highlight-color: transparent;
     }
     
     /* Nav right adjustments */
@@ -3399,6 +3408,22 @@ img {
     .toggle-btn {
         padding: 8px 12px;
         font-size: 1rem;
+        min-width: 44px;
+        min-height: 44px;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .toggle-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: #ffffff;
+        border-radius: var(--radius-sm);
+        box-shadow: var(--shadow-lg);
+        min-width: 200px;
+        z-index: 1001;
+        display: none;
+        overflow: hidden;
     }
     
     .toggle-dropdown {

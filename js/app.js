@@ -656,12 +656,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleDropdown = document.getElementById('toggleDropdown');
     
     if (toggleBtn && toggleDropdown) {
-        toggleBtn.addEventListener('click', (e) => {
+        // Use touchend for better mobile support
+        const handleToggle = (e) => {
+            e.preventDefault();
             e.stopPropagation();
             toggleDropdown.classList.toggle('show');
-        });
+        };
+        
+        // Add both click and touchend events for better mobile compatibility
+        toggleBtn.addEventListener('click', handleToggle);
+        toggleBtn.addEventListener('touchend', handleToggle);
         
         document.addEventListener('click', (e) => {
+            if (!toggleBtn.contains(e.target) && !toggleDropdown.contains(e.target)) {
+                toggleDropdown.classList.remove('show');
+            }
+        });
+        
+        // Also handle touchend for document
+        document.addEventListener('touchend', (e) => {
             if (!toggleBtn.contains(e.target) && !toggleDropdown.contains(e.target)) {
                 toggleDropdown.classList.remove('show');
             }

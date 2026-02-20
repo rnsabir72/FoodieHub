@@ -13,7 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelector('.nav-links');
     
     if (mobileMenuBtn && navLinks) {
-        mobileMenuBtn.addEventListener('click', () => {
+        const handleMobileMenu = (e) => {
+            if (e) e.preventDefault();
             navLinks.classList.toggle('active');
             
             const icon = mobileMenuBtn.querySelector('i');
@@ -24,7 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-bars');
             }
-        });
+        };
+        
+        mobileMenuBtn.addEventListener('click', handleMobileMenu);
+        mobileMenuBtn.addEventListener('touchend', handleMobileMenu);
         
         navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
