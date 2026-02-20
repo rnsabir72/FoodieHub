@@ -112,10 +112,10 @@ function renderMenuItems(category = 'all') {
         if (items.length === 0) {
             menuGrid.innerHTML = '<div class="no-items">No items found</div>';
         } else {
-            menuGrid.innerHTML = items.map(item => `
-                <div class="menu-item" data-category="${item.category}">
+            menuGrid.innerHTML = items.map((item, idx) => `
+                <div class="menu-item" data-category="${item.category}" style="animation-delay: ${idx * 0.1}s">
                     <div class="menu-item-image">
-                        <img src="${item.image}" alt="${item.name}" loading="lazy">
+                        <img src="${item.image}" alt="${item.name}" loading="lazy" style="animation-delay: ${idx * 0.1}s">
                         <span class="category-badge ${item.category}">${item.category}</span>
                     </div>
                     <div class="menu-item-content">
@@ -433,8 +433,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         orderModalMenu.innerHTML = items.map((item, idx) => `
-            <div class="order-menu-item" data-id="${item.id}" data-name="${item.name}" data-prices='${JSON.stringify(item.prices).replace(/'/g, "&#39;")}'>
-                <img src="${item.image}" alt="${item.name}">
+            <div class="order-menu-item" data-id="${item.id}" data-name="${item.name}" data-prices='${JSON.stringify(item.prices).replace(/'/g, "&#39;")}' style="animation-delay: ${idx * 0.05}s">
+                <img src="${item.image}" alt="${item.name}" style="animation-delay: ${idx * 0.05}s">
                 <div class="order-menu-item-info">
                     <div class="order-menu-item-name">${item.name}</div>
                     <div class="order-menu-item-category">${item.category}</div>
@@ -658,12 +658,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (toggleBtn && toggleDropdown) {
         toggleBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            toggleDropdown.classList.toggle('active');
+            toggleDropdown.classList.toggle('show');
         });
         
         document.addEventListener('click', (e) => {
             if (!toggleBtn.contains(e.target) && !toggleDropdown.contains(e.target)) {
-                toggleDropdown.classList.remove('active');
+                toggleDropdown.classList.remove('show');
             }
         });
     }
